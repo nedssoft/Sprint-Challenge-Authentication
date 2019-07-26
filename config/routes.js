@@ -1,6 +1,8 @@
 const axios = require('axios');
-
+const { ErrorHandler } = require('express-error-bouncer');
 const { authenticate } = require('../auth/authenticate');
+const bcrypt = require('bcryptjs');
+const User = require('../database/models/user')
 
 module.exports = server => {
   server.post('/api/register', register);
@@ -8,8 +10,23 @@ module.exports = server => {
   server.get('/api/jokes', authenticate, getJokes);
 };
 
-function register(req, res) {
-  // implement user registration
+async function register(req, res, next) {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) {
+      throw new ErrorHandler(400, 'username or password are required');
+    }
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const user = await User.create({username, password: hashedPassword});
+    if(!user) {
+      throw new ErrorHandler(500, 'Unable to save the user in the database');
+    }
+    return res.status(201).json({
+      user
+    });
+  } catch (error) {
+    next(error);
+  }
 }
 
 function login(req, res) {
