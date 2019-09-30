@@ -34,7 +34,7 @@
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "express-error-bouncer": "^1.0.1",
-    "helmet": "^3.18.0",
+    "helmet": "^3.21.1",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.17.0",
     "sqlite3": "^4.0.8"
